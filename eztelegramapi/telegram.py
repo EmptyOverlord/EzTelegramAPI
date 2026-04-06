@@ -10,4 +10,4 @@ def send_message(TOKEN: str, CHAT_ID: int, text: str):
     if r_object.status_code == 200:
         return r_object
     else:
-        raise ValueError(r_object.text)
+        raise ValueError(f"❗➡️ {r_object.text}")
