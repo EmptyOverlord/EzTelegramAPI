@@ -1,10 +1,14 @@
 [project]
 name = "eztelegramapi"
-version = "0.1.8"
+version = "0.1.9"
 description = "Simple Telegram helper"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["requests"]
+
+[project.urls]
+Homepage = "https://github.com/EmptyOverlord/EzTelegramAPI"
+Issues = "https://github.com/EmptyOverlord/EzTelegramAPI/issues"
 
 [build-system]
 requires = ["setuptools>=61.0"]

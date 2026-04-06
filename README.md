@@ -1,12 +1,16 @@
 # EzTelegramAPI
 
-![Python versions](https://img.shields.io/pypi/pyversions/requests.svg)
+![Python versions|234](https://img.shields.io/pypi/pyversions/requests.svg)
 
 > **The simplest way to send Telegram messages from Python.**  
 > One function. Zero boilerplate. Just send.
 
 ---
 
+🔗 GitHub: https://github.com/EmptyOverlord/EzTelegramAPI  
+📦 PyPI: https://pypi.org/project/eztelegramapi/
+
+---
 ## Installation
 
 ```bash
