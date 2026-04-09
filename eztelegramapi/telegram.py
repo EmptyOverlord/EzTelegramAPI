@@ -30,3 +30,30 @@ def edit_message(TOKEN: str, CHAT_ID: int, MESSAGE_ID: int, text: str) -> reques
         return r_object
     else:
         raise ValueError(f"❗➡️ {r_object.text}")
+        
+
+def delete_message(TOKEN: str, CHAT_ID: int, MESSAGE_ID: int) -> requests.Response:
+    '''returns the response object.'''
+    url = f"https://api.telegram.org/bot{TOKEN}/deleteMessage"
+    r_object = requests.get(url, params={
+        "chat_id": CHAT_ID,
+        "message_id": MESSAGE_ID
+    })
+    if r_object.status_code == 200:
+        return r_object
+    else:
+        raise ValueError(f"❗➡️ {r_object.text}")
+        
+        
+def forward_message(TOKEN: str, FROM_CHAT_ID: int, TO_CHAT_ID: int, MESSAGE_ID: int) -> int | requests.Response:
+    '''Forwards a message from one chat to another. Returns message_id of the forwarded message.'''
+    url = f"https://api.telegram.org/bot{TOKEN}/forwardMessage"
+    r_object = requests.get(url, params={
+        "chat_id": TO_CHAT_ID,
+        "from_chat_id": FROM_CHAT_ID,
+        "message_id": MESSAGE_ID
+    })
+    if r_object.status_code == 200:
+        return r_object.json()["result"]["message_id"]
+    else:
+        raise ValueError(f"❗➡️ {r_object.text}")
