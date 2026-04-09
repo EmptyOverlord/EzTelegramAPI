@@ -1,7 +1,7 @@
 # EzTelegramAPI
 ![Python versions](https://img.shields.io/pypi/pyversions/requests.svg)
 > **The simplest way to send Telegram messages from Python.**  
-> Two functions. Zero boilerplate. Just send.
+> Four functions. Zero boilerplate. Just send.
 ---
 🔗 GitHub: https://github.com/EmptyOverlord/EzTelegramAPI  
 📦 PyPI: https://pypi.org/project/eztelegramapi/
@@ -13,13 +13,15 @@ pip install EzTelegramAPI
 ---
 ## Quickstart
 ```python
-from eztelegramapi import send_message, edit_message
+from eztelegramapi import send_message, edit_message, delete_message, forward_message
 
 TOKEN   = "123456789:AABBCCDDEEFFaabbccddeeff-1234567890"  # from @BotFather
 CHAT_ID = 987654321                                         # your chat ID
 
 msg_id = send_message(TOKEN, CHAT_ID, "Hello from EzTelegramAPI! 🚀")
 edit_message(TOKEN, CHAT_ID, msg_id, "Updated message ✏️")
+delete_message(TOKEN, CHAT_ID, msg_id)
+forward_message(TOKEN, FROM_CHAT_ID=CHAT_ID, TO_CHAT_ID=987654322, MESSAGE_ID=msg_id)
 ```
 That's it. Seriously.
 ---
@@ -43,7 +45,6 @@ That's it. Seriously.
 **Returns:** `int` (message_id) or `requests.Response`
 
 ---
-
 ### `edit_message(token, chat_id, message_id, text)`
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -55,14 +56,44 @@ That's it. Seriously.
 **Returns:** `requests.Response`
 
 ---
+### `delete_message(token, chat_id, message_id)`
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
+| `chat_id` | `int` | Target chat or user ID |
+| `message_id` | `int` | ID of the message to delete |
+
+**Returns:** `requests.Response`
+
+---
+### `forward_message(token, from_chat_id, to_chat_id, message_id)`
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
+| `from_chat_id` | `int` | Chat to forward the message from |
+| `to_chat_id` | `int` | Chat to forward the message to |
+| `message_id` | `int` | ID of the message to forward |
+
+**Returns:** `int` (message_id of the forwarded message)
+
+---
 ## Examples
 **Live progress update:**
 ```python
 import time
-
 msg_id = send_message(TOKEN, CHAT_ID, "⏳ Job started...")
 time.sleep(5)
 edit_message(TOKEN, CHAT_ID, msg_id, "✅ Job finished!")
+```
+**Clean up after yourself:**
+```python
+msg_id = send_message(TOKEN, CHAT_ID, "⏳ Processing...")
+do_work()
+delete_message(TOKEN, CHAT_ID, msg_id)
+```
+**Repost to another chat:**
+```python
+forward_message(TOKEN, FROM_CHAT_ID=CHAT_ID, TO_CHAT_ID=OTHER_CHAT_ID, MESSAGE_ID=msg_id)
 ```
 **Alert on error:**
 ```python
