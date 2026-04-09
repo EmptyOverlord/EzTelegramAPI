@@ -1,7 +1,7 @@
 # EzTelegramAPI
 ![Python versions](https://img.shields.io/pypi/pyversions/requests.svg)
 > **The simplest way to send Telegram messages from Python.**  
-> Four functions. Zero boilerplate. Just send.
+> Four functions. One class. Zero boilerplate. Just send.
 ---
 🔗 GitHub: https://github.com/EmptyOverlord/EzTelegramAPI  
 📦 PyPI: https://pypi.org/project/eztelegramapi/
@@ -11,19 +11,37 @@
 pip install EzTelegramAPI
 ```
 ---
-## Quickstart
+## Two ways to use it
+
+### 1. Functions — quick and direct
+No setup, just call and go. Perfect for one-off scripts and alerts.
 ```python
 from eztelegramapi import send_message, edit_message, delete_message, forward_message
 
-TOKEN   = "123456789:AABBCCDDEEFFaabbccddeeff-1234567890"  # from @BotFather
-CHAT_ID = 987654321                                         # your chat ID
+TOKEN   = "123456789:AABBCCDDEEFFaabbccddeeff-1234567890"
+CHAT_ID = 987654321
 
 msg_id = send_message(TOKEN, CHAT_ID, "Hello from EzTelegramAPI! 🚀")
 edit_message(TOKEN, CHAT_ID, msg_id, "Updated message ✏️")
 delete_message(TOKEN, CHAT_ID, msg_id)
-forward_message(TOKEN, FROM_CHAT_ID=CHAT_ID, TO_CHAT_ID=987654322, MESSAGE_ID=msg_id)
+forward_message(TOKEN, from_chat_id=CHAT_ID, to_chat_id=987654322, message_id=msg_id)
 ```
+
+### 2. Class — no repetition
+Set your token and chat_id once, never pass them again.
+```python
+from eztelegramapi import EzTelegramBot
+
+bot = EzTelegramBot(token="123456789:AABBCCDDEEFFaabbccddeeff-1234567890", chat_id=987654321)
+
+msg_id = bot.send_message("Hello from EzTelegramAPI! 🚀")
+bot.edit_message(msg_id, "Updated message ✏️")
+bot.delete_message(msg_id)
+bot.forward_message(from_chat_id=987654322, message_id=msg_id)
+```
+
 That's it. Seriously.
+
 ---
 ## Why EzTelegramAPI?
 | | EzTelegramAPI | Other libraries |
@@ -34,7 +52,10 @@ That's it. Seriously.
 | Learning curve | Zero          | Non-zero |
 ---
 ## API Reference
-### `send_message(token, chat_id, text, *, return_message_id=True)`
+
+### Functions
+
+#### `send_message(token, chat_id, text, *, return_message_id=True)`
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
@@ -45,7 +66,7 @@ That's it. Seriously.
 **Returns:** `int` (message_id) or `requests.Response`
 
 ---
-### `edit_message(token, chat_id, message_id, text)`
+#### `edit_message(token, chat_id, message_id, text)`
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
@@ -56,7 +77,7 @@ That's it. Seriously.
 **Returns:** `requests.Response`
 
 ---
-### `delete_message(token, chat_id, message_id)`
+#### `delete_message(token, chat_id, message_id)`
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
@@ -66,7 +87,7 @@ That's it. Seriously.
 **Returns:** `requests.Response`
 
 ---
-### `forward_message(token, from_chat_id, to_chat_id, message_id)`
+#### `forward_message(token, from_chat_id, to_chat_id, message_id)`
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
@@ -77,36 +98,50 @@ That's it. Seriously.
 **Returns:** `int` (message_id of the forwarded message)
 
 ---
+### Class
+
+#### `EzTelegramBot(token, chat_id=None)`
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `token` | `str` | Your bot token from [@BotFather](https://t.me/BotFather) |
+| `chat_id` | `int \| None` | Default chat ID — can be overridden per call |
+
+All methods mirror the functions above but without `token` and with optional `chat_id`.
+
+---
 ## Examples
+
 **Live progress update:**
 ```python
 import time
-msg_id = send_message(TOKEN, CHAT_ID, "⏳ Job started...")
+
+msg_id = bot.send_message("⏳ Job started...")
 time.sleep(5)
-edit_message(TOKEN, CHAT_ID, msg_id, "✅ Job finished!")
+bot.edit_message(msg_id, "✅ Job finished!")
 ```
 **Clean up after yourself:**
 ```python
-msg_id = send_message(TOKEN, CHAT_ID, "⏳ Processing...")
+msg_id = bot.send_message("⏳ Processing...")
 do_work()
-delete_message(TOKEN, CHAT_ID, msg_id)
-```
-**Repost to another chat:**
-```python
-forward_message(TOKEN, FROM_CHAT_ID=CHAT_ID, TO_CHAT_ID=OTHER_CHAT_ID, MESSAGE_ID=msg_id)
+bot.delete_message(msg_id)
 ```
 **Alert on error:**
 ```python
 try:
     risky_operation()
 except Exception as e:
-    send_message(TOKEN, CHAT_ID, f"🔴 Error: {e}")
+    bot.send_message(f"🔴 Error: {e}")
 ```
 **Cron job notification:**
 ```python
 from datetime import datetime
+
 now = datetime.now().strftime("%Y-%m-%d %H:%M")
-send_message(TOKEN, CHAT_ID, f"✅ Backup finished at {now}")
+bot.send_message(f"✅ Backup finished at {now}")
+```
+**Send to a different chat on the fly:**
+```python
+bot.send_message("Alert!", chat_id=OTHER_CHAT_ID)
 ```
 ---
 ## How to get your Chat ID
