@@ -1,59 +1,30 @@
 import requests
 
-def send_message(TOKEN: str, CHAT_ID: int, text: str ,*,return_message_id=True) -> int | requests.Response:
-    '''returns the message_id of the sent message if return_message_id is True, otherwise returns the response object.'''
+def _request(method: str, token: str, params: dict) -> requests.Response:
+    url = f"https://api.telegram.org/bot{token}/{method}"
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        raise ValueError(f"❗➡️ {response.text}")
+    return response
 
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    r_object = requests.get(url, params={
-        "chat_id": CHAT_ID,
-        "text": text
-    })
 
-    if r_object.status_code == 200:
-        if return_message_id:
-            return r_object.json()["result"]["message_id"]
-        else:
-            return r_object
-    else:
-        raise ValueError(f"❗➡️ {r_object.text}")
+def send_message(token: str, chat_id: int, text: str, *, return_message_id: bool = True) -> int | requests.Response:
+    """Returns message_id if return_message_id is True, otherwise returns the Response object."""
+    response = _request("sendMessage", token, {"chat_id": chat_id, "text": text})
+    return response.json()["result"]["message_id"] if return_message_id else response
 
-def edit_message(TOKEN: str, CHAT_ID: int, MESSAGE_ID: int, text: str) -> requests.Response:
-    '''returns the response object.'''
 
-    url = f"https://api.telegram.org/bot{TOKEN}/editMessageText"
-    r_object = requests.get(url, params={
-        "chat_id": CHAT_ID,
-        "message_id": MESSAGE_ID,
-        "text": text
-    })
-    if r_object.status_code == 200:
-        return r_object
-    else:
-        raise ValueError(f"❗➡️ {r_object.text}")
-        
+def edit_message(token: str, chat_id: int, message_id: int, text: str) -> requests.Response:
+    """Returns the Response object."""
+    return _request("editMessageText", token, {"chat_id": chat_id, "message_id": message_id, "text": text})
 
-def delete_message(TOKEN: str, CHAT_ID: int, MESSAGE_ID: int) -> requests.Response:
-    '''returns the response object.'''
-    url = f"https://api.telegram.org/bot{TOKEN}/deleteMessage"
-    r_object = requests.get(url, params={
-        "chat_id": CHAT_ID,
-        "message_id": MESSAGE_ID
-    })
-    if r_object.status_code == 200:
-        return r_object
-    else:
-        raise ValueError(f"❗➡️ {r_object.text}")
-        
-        
-def forward_message(TOKEN: str, FROM_CHAT_ID: int, TO_CHAT_ID: int, MESSAGE_ID: int) -> int | requests.Response:
-    '''Forwards a message from one chat to another. Returns message_id of the forwarded message.'''
-    url = f"https://api.telegram.org/bot{TOKEN}/forwardMessage"
-    r_object = requests.get(url, params={
-        "chat_id": TO_CHAT_ID,
-        "from_chat_id": FROM_CHAT_ID,
-        "message_id": MESSAGE_ID
-    })
-    if r_object.status_code == 200:
-        return r_object.json()["result"]["message_id"]
-    else:
-        raise ValueError(f"❗➡️ {r_object.text}")
+
+def delete_message(token: str, chat_id: int, message_id: int) -> requests.Response:
+    """Returns the Response object."""
+    return _request("deleteMessage", token, {"chat_id": chat_id, "message_id": message_id})
+
+
+def forward_message(token: str, from_chat_id: int, to_chat_id: int, message_id: int) -> int:
+    """Forwards a message from one chat to another. Returns message_id of the forwarded message."""
+    response = _request("forwardMessage", token, {"chat_id": to_chat_id, "from_chat_id": from_chat_id, "message_id": message_id})
+    return response.json()["result"]["message_id"]
