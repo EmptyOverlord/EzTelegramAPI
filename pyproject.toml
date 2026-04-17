@@ -1,7 +1,7 @@
 [project]
 name = "eztelegramapi"
-version = "1.0.2"
-description = "Simple Telegram helper"
+version = "1.0.3"
+description = "The simplest way to send Telegram messages from Python"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["requests"]

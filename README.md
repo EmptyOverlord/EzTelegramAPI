@@ -6,7 +6,6 @@
 
 ---
 🔗 GitHub: https://github.com/EmptyOverlord/EzTelegramAPI  
-
 📦 PyPI: https://pypi.org/project/eztelegramapi/
 
 ---
